@@ -13,7 +13,25 @@
 
 
 ## About
-brev is a fastly telegram bot
+brev is a fastly telegram bot with modern modular architecture
+
+### Architecture
+- **Service Layer**: Business logic separated from handlers
+- **Middleware**: Logging, error handling, rate limiting
+- **Modular Structure**: Commands grouped by functionality
+- **Type Safety**: Full TypeScript coverage with Zod validation
+
+### Project Structure
+```
+src/
+├── modules/           # Feature-based modules
+│   ├── core/         # Basic commands (start, help)
+│   └── index.ts      # Command exports
+├── services/         # Business logic layer
+├── middleware/       # Request processing
+├── database/         # Database connection
+└── main.ts          # Application entry point
+```
 
 [style doc](style.md)
 
@@ -23,7 +41,9 @@ brev is a fastly telegram bot
 ```bash
 bun install # install dependencies
 
-bun run dev # run brev
+cp .env.example .env # configure environment
+
+bun run src/main.ts # run brev
 ```
 
 <div align="center">
