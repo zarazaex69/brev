@@ -1,3 +1,17 @@
+<div align="center">
+  <img src="assets/logo.png" alt="brev" width="300"/>
+</div>
+
+
+<div align="center">
+
+![License](https://img.shields.io/badge/license-BSD--3--Clause-0D1117?style=flat-square&logo=open-source-initiative&logoColor=green&labelColor=0D1117)
+![Bun](https://img.shields.io/badge/-Bun-0D1117?style=flat-square&logo=Bun&logoColor=F3E6D8)
+![TypeScript](https://img.shields.io/badge/-TypeScript-0D1117?style=flat-square&logo=typescript&logoColor=377CC8)
+
+
+</div>
+
 # Documentation Style Guide
 
 ## Hierarchy System
@@ -233,3 +247,19 @@ Expressive text faces for different content moods:
 - Maintain consistency within a single document
 - Pseudographic elements should enhance, not overwhelm
 - Keep decorative elements culturally appropriate
+
+
+<div align="center">
+
+---
+
+### Contact
+
+Telegram: [zarazaex](https://t.me/zarazaexe)
+<br>
+Email: [zarazaex@tuta.io](mailto:zarazaex@tuta.io)
+<br>
+Site: [zarazaex.xyz](https://zarazaex.xyz)
+<br>
+
+</div>

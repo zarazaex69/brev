@@ -14,6 +14,9 @@
 
 ## About
 brev is a fastly telegram bot
+
+[style doc](style.md)
+
 ## Fast Start
 
 
