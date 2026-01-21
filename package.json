@@ -10,8 +10,9 @@
     "db:migrate": "drizzle-kit migrate"
   },
   "dependencies": {
-    "grammy": "^1.21.1",
     "drizzle-orm": "^0.29.3",
+    "grammy": "^1.21.1",
+    "qwen.js": "^0.1.3",
     "zod": "^3.22.4"
   },
   "devDependencies": {
