@@ -76,8 +76,8 @@ export const helpCommand: Command = {
         message += `\n[*] Параметры:\n`
         command.arguments.forEach((arg: any, index: number) => {
           const required = arg.required
-            ? "[+] обязательный"
-            : "[-] необязательный"
+            ? " обязательный "
+            : " необязательный "
           const isLast = index === command.arguments!.length - 1
           const connector = isLast ? "└" : "├"
           
