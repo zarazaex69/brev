@@ -1,0 +1,24 @@
+{
+  "name": "brev-bot",
+  "private": true,
+  "module": "src/main.ts",
+  "type": "module",
+  "scripts": {
+    "dev": "bun --watch src/main.ts",
+    "start": "bun src/main.ts",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
+  },
+  "dependencies": {
+    "grammy": "^1.21.1",
+    "drizzle-orm": "^0.29.3",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/bun": "latest",
+    "drizzle-kit": "^0.20.9"
+  },
+  "peerDependencies": {
+    "typescript": "^5"
+  }
+}
