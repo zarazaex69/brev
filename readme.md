@@ -13,13 +13,8 @@
 
 
 ## About
-brev is a fastly telegram bot with modern modular architecture
+brev is a fastly telegram bot
 
-### Architecture
-- **Service Layer**: Business logic separated from handlers
-- **Middleware**: Logging, error handling, rate limiting
-- **Modular Structure**: Commands grouped by functionality
-- **Type Safety**: Full TypeScript coverage with Zod validation
 
 ### Project Structure
 ```
