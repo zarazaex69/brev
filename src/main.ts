@@ -2,8 +2,11 @@ import { Bot } from "grammy"
 import { config } from "./config.js"
 import { commands } from "./modules/index.js"
 import { loggingMiddleware } from "./middleware/logging.js"
+import { prefixMiddleware } from "./middleware/prefixMiddleware.js"
 import { errorHandler } from "./middleware/errorHandler.js"
 import { Database } from "./database/connection.js"
+import { handlePrefixCallback } from "./handlers/callbackHandler.js"
+import { PrefixService } from "./services/prefixService.js"
 import type { BotContext } from "./types.js"
 
 const bot = new Bot<BotContext>(config.BOT_TOKEN)
@@ -14,10 +17,10 @@ async function initializeBot() {
     await db.connect()
 
     bot.use(loggingMiddleware)
-
-    commands.forEach(command => {
-      bot.command(command.name, command.handler)
-    })
+    
+    bot.on("message:text", prefixMiddleware)
+    
+    bot.on("callback_query", handlePrefixCallback)
 
     await bot.api.setMyCommands(
       commands.map(cmd => ({
@@ -29,7 +32,8 @@ async function initializeBot() {
     bot.catch(errorHandler)
 
     console.log("[!] Bot initialized successfully")
-    console.log(`[!] Registered ${commands.length} commands`)
+    console.log(`[!] Registered ${commands.length} commands with custom prefix system`)
+    console.log(`[!] Supported prefixes: ${PrefixService.getAllPrefixes().join(", ")}`)
     
     await bot.start()
   } catch (error) {

@@ -2,6 +2,11 @@ import type { Context } from "grammy"
 import { UserService } from "../../services/userService.js"
 import type { Command } from "../../types.js"
 
+import type { Context } from "grammy"
+import { UserService } from "../../services/userService.js"
+import { PrefixService } from "../../services/prefixService.js"
+import type { Command } from "../../types.js"
+
 export const startCommand: Command = {
   name: "start",
   description: "Познакомиться с ботом",
@@ -12,6 +17,8 @@ export const startCommand: Command = {
     await UserService.logUserAction(ctx, "start command")
     
     const firstName = ctx.from?.first_name || "друг"
+    const userId = ctx.from?.id
+    const userPrefix = userId ? PrefixService.getUserPrefix(userId) : "/"
 
     const message = `(- ω -) Привет, ${firstName}!
 
@@ -22,7 +29,7 @@ export const startCommand: Command = {
 ├ Отвечать на любые вопросы
 └ Помогать с администрацией группы
 
-[*] Начни с <code>/help</code> чтобы увидеть все мои команды`
+[*] Начни с <code>${userPrefix}help</code> чтобы увидеть все мои команды`
 
     await ctx.reply(message, { parse_mode: "HTML" })
   }
@@ -47,23 +54,26 @@ export const helpCommand: Command = {
     const { commands } = await import("../../modules/index.js")
     const args = ctx.message?.text?.split(" ").slice(1) || []
     const targetCommand = args[0]
+    const userId = ctx.from?.id
+    const userPrefix = userId ? PrefixService.getUserPrefix(userId) : "/"
 
     if (targetCommand) {
       const command = commands.find((cmd: Command) => cmd.name === targetCommand)
       if (!command) {
         await ctx.reply(
-          ` ( 0-0 ) Команда "${targetCommand}" не найдена\n\nИспользуй <code>/help</code> для полного списка`,
+          ` ( 0-0 ) Команда "${targetCommand}" не найдена\n\nИспользуй <code>${userPrefix}help</code> для полного списка`,
           { parse_mode: "HTML" }
         )
         return
       }
 
-      let message = `! Команда: <code>/${command.name}</code>\n`
+      let message = `! Команда: <code>${userPrefix}${command.name}</code>\n`
       message += `[*] ${command.description}\n`
 
       if (command.usage) {
+        const customUsage = command.usage.replace("/", userPrefix)
         message += `\n[?] Как использовать:\n`
-        message += `└ <code>${command.usage}</code>\n`
+        message += `└ <code>${customUsage}</code>\n`
       }
 
       if (command.arguments && command.arguments.length > 0) {
@@ -88,7 +98,8 @@ export const helpCommand: Command = {
         command.examples.forEach((example: string, index: number) => {
           const isLast = index === command.examples!.length - 1
           const connector = isLast ? "└" : "├"
-          message += `${connector} <code>${example}</code>\n`
+          const customExample = example.replace("/", userPrefix)
+          message += `${connector} <code>${customExample}</code>\n`
         })
       }
 
@@ -103,18 +114,19 @@ export const helpCommand: Command = {
       const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
       const roman = romanNumerals[index] || `${number}`
       
-      message += `${roman} - <code>/${command.name}</code>\n`
+      message += `${roman} - <code>${userPrefix}${command.name}</code>\n`
       message += `├ ${command.description}\n`
       if (command.usage) {
-        message += `└ <code>${command.usage}</code>\n`
+        const customUsage = command.usage.replace("/", userPrefix)
+        message += `└ <code>${customUsage}</code>\n`
       } else {
-        message += `└ <code>/${command.name}</code>\n`
+        message += `└ <code>${userPrefix}${command.name}</code>\n`
       }
       message += `\n`
     })
 
-    message += `[*] Для подробностей: <code>/help [команда]</code>\n`
-    message += `[^] Например: <code>/help start</code>`
+    message += `[*] Для подробностей: <code>${userPrefix}help [команда]</code>\n`
+    message += `[^] Например: <code>${userPrefix}help start</code>`
 
     await ctx.reply(message, { parse_mode: "HTML" })
   }
