@@ -31,8 +31,12 @@ export class PrefixService {
       if (text.startsWith(prefix)) {
         const withoutPrefix = text.slice(1)
         const parts = withoutPrefix.split(" ")
-        const command = parts[0]
+        let command = parts[0]
         const args = parts.slice(1)
+        
+        if (command.includes("@")) {
+          command = command.split("@")[0]
+        }
         
         return { prefix, command, args }
       }

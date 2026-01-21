@@ -1,9 +1,5 @@
 import type { Context } from "grammy"
 import { UserService } from "../../services/userService.js"
-import type { Command } from "../../types.js"
-
-import type { Context } from "grammy"
-import { UserService } from "../../services/userService.js"
 import { PrefixService } from "../../services/prefixService.js"
 import type { Command } from "../../types.js"
 
@@ -67,7 +63,7 @@ export const helpCommand: Command = {
         return
       }
 
-      let message = `! Команда: <code>${userPrefix}${command.name}</code>\n`
+      let message = `! Команда: <code>${command.name}</code>\n`
       message += `[*] ${command.description}\n`
 
       if (command.usage) {
@@ -114,7 +110,7 @@ export const helpCommand: Command = {
       const romanNumerals = ["I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X"]
       const roman = romanNumerals[index] || `${number}`
       
-      message += `${roman} - <code>${userPrefix}${command.name}</code>\n`
+      message += `${roman} - <code>${command.name}</code>\n`
       message += `├ ${command.description}\n`
       if (command.usage) {
         const customUsage = command.usage.replace("/", userPrefix)
