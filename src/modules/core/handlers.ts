@@ -69,7 +69,7 @@ export const helpCommand: Command = {
       if (command.usage) {
         const customUsage = command.usage.replace("/", userPrefix)
         message += `\n[?] Как использовать:\n`
-        message += `└ <code>${customUsage}</code>\n`
+        message += `└ <code>${customUsage.replace(/[<>]/g, (match) => match === '<' ? '[' : ']')}</code>\n`
       }
 
       if (command.arguments && command.arguments.length > 0) {
@@ -113,7 +113,7 @@ export const helpCommand: Command = {
       message += `${roman} - <code>${command.name}</code>\n`
       message += `├ ${command.description}\n`
       if (command.usage) {
-        const customUsage = command.usage.replace("/", userPrefix)
+        const customUsage = command.usage.replace("/", userPrefix).replace(/[<>]/g, (match) => match === '<' ? '[' : ']')
         message += `└ <code>${customUsage}</code>\n`
       } else {
         message += `└ <code>${userPrefix}${command.name}</code>\n`

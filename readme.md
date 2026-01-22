@@ -31,7 +31,7 @@ src/
 [style doc](style.md)
 
 ## Fast Start
-
+ 
 
 ```bash
 bun install # install dependencies

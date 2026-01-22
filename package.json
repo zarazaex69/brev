@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "bun --watch src/main.ts",
     "start": "bun src/main.ts",
-    "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate"
+    "db:generate": "drizzle-kit generate:sqlite",
+    "db:migrate": "drizzle-kit migrate:sqlite"
   },
   "dependencies": {
     "drizzle-orm": "^0.29.3",
     "grammy": "^1.21.1",
-    "qwen.js": "^0.1.3",
+    "qwen.js": "^0.1.5",
     "zod": "^3.22.4"
   },
   "devDependencies": {
