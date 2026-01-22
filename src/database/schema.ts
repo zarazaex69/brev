@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core"
+import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
 
 export const users = sqliteTable("users", {
   id: integer("id").primaryKey(),
@@ -8,7 +8,7 @@ export const users = sqliteTable("users", {
   lastName: text("last_name"),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
-})
+});
 
 export const userTokens = sqliteTable("user_tokens", {
   id: integer("id").primaryKey(),
@@ -18,11 +18,19 @@ export const userTokens = sqliteTable("user_tokens", {
   expiresAt: integer("expires_at").notNull(),
   createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
   updatedAt: integer("updated_at", { mode: "timestamp" }).notNull(),
-})
+});
 
 export const userActions = sqliteTable("user_actions", {
   id: integer("id").primaryKey(),
   telegramId: integer("telegram_id").notNull(),
   action: text("action").notNull(),
   timestamp: integer("timestamp", { mode: "timestamp" }).notNull(),
-})
+});
+
+export const history = sqliteTable("history", {
+  id: integer("id").primaryKey(),
+  telegramId: integer("telegram_id").notNull(),
+  role: text("role", { enum: ["user", "assistant"] }).notNull(),
+  content: text("content").notNull(),
+  createdAt: integer("created_at", { mode: "timestamp" }).notNull(),
+});

@@ -81,16 +81,9 @@ export class QwenService {
     }
   }
 
-  static async askQwen(prompt: string, systemPrompt?: string): Promise<string> {
+  static async generate(messages: ChatMessage[]): Promise<string> {
     try {
       const client = await this.getOrCreateClient();
-
-      const messages: ChatMessage[] = [];
-      if (systemPrompt) {
-        messages.push({ role: "system", content: systemPrompt });
-      }
-      messages.push({ role: "user", content: prompt });
-
       const options = {
         tools: [
           {
@@ -123,7 +116,7 @@ export class QwenService {
           throw new Error("EMPTY_RESPONSE");
         }
       }
-      console.error("Qwen service askQwen error:", error);
+      console.error("Qwen service generate error:", error);
       throw new Error("API_ERROR");
     }
   }

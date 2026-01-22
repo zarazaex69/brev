@@ -7,7 +7,7 @@
     "dev": "bun --watch src/main.ts",
     "start": "bun src/main.ts",
     "db:generate": "drizzle-kit generate:sqlite",
-    "db:migrate": "drizzle-kit migrate:sqlite"
+    "db:migrate": "bun src/database/migrate.ts"
   },
   "dependencies": {
     "drizzle-orm": "^0.29.3",
