@@ -1,4 +1,4 @@
-import { createQwen, type ChatMessage } from "qwen.js";
+import { createQwen, type ChatMessage, refreshAccessToken } from "qwen.js";
 import { Database } from "../database/connection.js";
 import { userTokens } from "../database/schema.js";
 import { eq } from "drizzle-orm";
@@ -9,10 +9,6 @@ export class QwenService {
   private static client: ReturnType<typeof createQwen> | null = null;
 
   static async getOrCreateClient(): Promise<ReturnType<typeof createQwen>> {
-    if (this.client) {
-      return this.client;
-    }
-
     const db = Database.getInstance().getDb();
     const tokenRecord = await db
       .select()
@@ -29,12 +25,50 @@ export class QwenService {
       throw new Error("AUTH_REQUIRED");
     }
 
-    this.client = createQwen({
-      accessToken: token.accessToken,
-      refreshToken: token.refreshToken || undefined,
-    });
+    const now = Math.floor(Date.now() / 1000);
+    const isExpired = token.expiresAt && token.expiresAt < now + 60;
+
+    if (isExpired && token.refreshToken) {
+      await this.refreshTokens();
+      this.client = null;
+    }
+
+    if (!this.client) {
+      const updatedToken = await db
+        .select()
+        .from(userTokens)
+        .where(eq(userTokens.telegramId, GLOBAL_TOKEN_ID))
+        .limit(1);
+
+      const currentToken = updatedToken[0];
+      if (!currentToken) {
+        throw new Error("AUTH_REQUIRED");
+      }
+
+      this.client = createQwen({
+        accessToken: currentToken.accessToken,
+        refreshToken: currentToken.refreshToken || undefined,
+      });
+    }
 
     return this.client;
+  }
+
+  private static async refreshTokens(): Promise<void> {
+    const db = Database.getInstance().getDb();
+    const tokenRecord = await db
+      .select()
+      .from(userTokens)
+      .where(eq(userTokens.telegramId, GLOBAL_TOKEN_ID))
+      .limit(1);
+
+    if (tokenRecord.length === 0 || !tokenRecord[0]?.refreshToken) {
+      throw new Error("AUTH_REQUIRED");
+    }
+
+    const token = tokenRecord[0];
+    const newTokens = await refreshAccessToken(token.refreshToken);
+    await this.saveTokens(newTokens.access_token, newTokens.refresh_token);
   }
 
   static async saveTokens(
