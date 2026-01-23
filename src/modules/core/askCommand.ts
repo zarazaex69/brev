@@ -89,7 +89,7 @@ export const askCommand: Command = {
       return;
     }
 
-    const firstArg = args[0].toLowerCase();
+    const firstArg = args[0]?.toLowerCase();
 
     if (firstArg === "clear") {
       try {

@@ -34,11 +34,11 @@ export class PrefixService {
         let command = parts[0]
         const args = parts.slice(1)
         
-        if (command.includes("@")) {
+        if (command?.includes("@")) {
           command = command.split("@")[0]
         }
         
-        return { prefix, command, args }
+        return { prefix, command: command || "", args }
       }
     }
     

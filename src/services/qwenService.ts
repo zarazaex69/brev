@@ -67,6 +67,9 @@ export class QwenService {
     }
 
     const token = tokenRecord[0];
+    if (!token.refreshToken) {
+      throw new Error("No refresh token available");
+    }
     const newTokens = await refreshAccessToken(token.refreshToken);
     await this.saveTokens(newTokens.access_token, newTokens.refresh_token);
   }
@@ -132,7 +135,7 @@ export class QwenService {
       };
 
       let result = "";
-      for await (const chunk of client.chatStream(messages, options)) {
+      for await (const chunk of client.chatStream(messages, options as any)) {
         result += chunk;
       }
 
