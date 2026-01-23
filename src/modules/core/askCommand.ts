@@ -125,7 +125,7 @@ export const askCommand: Command = {
         - - list item
         - 1. numbered list
 
-IMPORTANT: Don't use default markdown that wasn't described above - it's not supported .`;
+IMPORTANT: Don't use default markdown ( "---"  TL;DR )that wasn't described above - it's not supported .`;
 
         const history = await HistoryService.getHistory(telegramId);
         const messages: ChatMessage[] = [
