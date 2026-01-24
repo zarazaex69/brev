@@ -44,7 +44,7 @@ function markdownToHtml(text: string): string {
 
 export const askCommand: Command = {
   name: "ask",
-  description: "Задать вопрос AI помощнику Brev",
+  description: "Задать вопрос Brev",
   usage: "/ask [вопрос] | clear",
   arguments: [
     {
@@ -94,7 +94,7 @@ export const askCommand: Command = {
     if (firstArg === "clear") {
       try {
         await HistoryService.clearHistory(telegramId);
-        await ctx.reply("[√] История вашего диалога была успешно отчищена");
+        await ctx.reply("[+] История вашего диалога была успешно отчищена");
       } catch (error) {
         console.error("History clear error:", error);
         await ctx.reply("[*] Произошла ошибка при отчистке истории");
@@ -134,7 +134,7 @@ export const askCommand: Command = {
           ctx.chat?.id!,
           processingMessage.message_id,
           `[!] Ваш вопрос:\n${question}\n\n` +
-            `[^] Ответ AI помощника:\n${htmlAnswer}`,
+            `[^] Ответ Brev:\n${htmlAnswer}`,
           { parse_mode: "HTML" },
         );
       } catch (error) {
@@ -152,11 +152,11 @@ export const askCommand: Command = {
               break;
             case "EMPTY_RESPONSE":
               errorMessage =
-                "[*] AI не смог сформулировать ответ\n\n[>] Попробуйте переформулировать вопрос";
+                "[*] Brev не смог сформулировать ответ\n\n[>] Попробуйте переформулировать вопрос";
               break;
             case "API_ERROR":
               errorMessage =
-                "[*] Временные проблемы с AI сервисом\n\n[>] Попробуйте через несколько минут";
+                "[*] проблемы с AI сервисом\n\n[>] Попробуйте через несколько минут";
               break;
           }
         }
