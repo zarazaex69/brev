@@ -13,7 +13,8 @@
 
 
 ## About
-brev is a fastly telegram bot
+brev is a fastly telegram bot, runned instance [@Brev9Bot](https://t.me/Brev9Bot)
+
 
 
 ### Project Structure
@@ -22,7 +23,7 @@ src/
 ├── modules/           # Feature-based modules
 │   ├── core/         # Basic commands (start, help)
 │   └── index.ts      # Command exports
-├── services/         # Business logic layer
+├── services/         # Logic layer
 ├── middleware/       # Request processing
 ├── database/         # Database connection
 └── main.ts          # Application entry point
