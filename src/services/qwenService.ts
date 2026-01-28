@@ -7,6 +7,7 @@ const GLOBAL_TOKEN_ID = 0;
 
 export class QwenService {
   private static client: ReturnType<typeof createQwen> | null = null;
+  private static activeGenerations = new Map<number, boolean>();
 
   static async getOrCreateClient(): Promise<ReturnType<typeof createQwen>> {
     const db = Database.getInstance().getDb();
@@ -118,7 +119,7 @@ export class QwenService {
     }
   }
 
-  static async generate(messages: ChatMessage[]): Promise<string> {
+  static async generate(messages: ChatMessage[], chatId?: number): Promise<string> {
     try {
       const client = await this.getOrCreateClient();
       const options = {
@@ -134,9 +135,17 @@ export class QwenService {
         ],
       };
 
+      if (chatId) {
+        this.activeGenerations.set(chatId, true);
+      }
+
       let result = "";
       for await (const chunk of client.chatStream(messages, options as any)) {
         result += chunk;
+      }
+
+      if (chatId) {
+        this.activeGenerations.delete(chatId);
       }
 
       if (!result || result.trim().length === 0) {
@@ -145,6 +154,10 @@ export class QwenService {
 
       return result;
     } catch (error) {
+      if (chatId) {
+        this.activeGenerations.delete(chatId);
+      }
+      
       if (error instanceof Error) {
         if (error.message === "AUTH_REQUIRED") {
           throw new Error("AUTH_REQUIRED");
@@ -156,6 +169,10 @@ export class QwenService {
       console.error("Qwen service generate error:", error);
       throw new Error("API_ERROR");
     }
+  }
+
+  static isGenerating(chatId: number): boolean {
+    return this.activeGenerations.has(chatId);
   }
 
   static async startAuthentication(): Promise<{
