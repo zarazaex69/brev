@@ -2,6 +2,7 @@ import { Bot } from "grammy";
 import { config } from "./config.js";
 import { commands } from "./modules/index.js";
 import { loggingMiddleware } from "./middleware/logging.js";
+import { messageLoggerMiddleware } from "./middleware/messageLogger.js";
 import { prefixMiddleware } from "./middleware/prefixMiddleware.js";
 import { errorHandler } from "./middleware/errorHandler.js";
 import { Database } from "./database/connection.js";
@@ -19,6 +20,7 @@ async function initializeBot() {
     await AuthSetup.ensureAuthenticated();
 
     bot.use(loggingMiddleware);
+    bot.use(messageLoggerMiddleware);
 
     bot.on("message:text", prefixMiddleware);
 

@@ -121,10 +121,6 @@ export const askCommand: Command = {
         const answer = await QwenService.generate(messages);
 
         await HistoryService.addMessage(telegramId, {
-          role: "user",
-          content: question,
-        });
-        await HistoryService.addMessage(telegramId, {
           role: "assistant",
           content: answer,
         });
