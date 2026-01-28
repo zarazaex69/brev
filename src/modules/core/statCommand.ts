@@ -9,7 +9,7 @@ export async function handleStatCommand(ctx: BotContext) {
     
     let limit = 20;
     
-    if (args.length > 0) {
+    if (args.length > 0 && args[0]) {
       const parsedLimit = parseInt(args[0]);
       if (!isNaN(parsedLimit) && parsedLimit > 0 && parsedLimit <= 50) {
         limit = parsedLimit;

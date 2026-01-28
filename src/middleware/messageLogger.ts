@@ -1,7 +1,7 @@
 import type { BotContext } from "../types";
 import { HistoryService } from "../services/historyService";
 import { UserService } from "../services/userService";
-import { NextFunction } from "grammy";
+import type { NextFunction } from "grammy";
 
 export async function messageLoggerMiddleware(ctx: BotContext, next: NextFunction) {
   if (ctx.message?.text && ctx.from?.id) {

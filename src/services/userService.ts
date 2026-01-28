@@ -37,6 +37,10 @@ export class UserService {
         return { id: userId, username, firstName, isNew: true }
       } else {
         const user = existingUser[0]
+        if (!user) {
+          throw new Error("User data corrupted")
+        }
+        
         if (user.firstName !== firstName || user.username !== username || user.lastName !== lastName) {
           await db
             .update(users)
