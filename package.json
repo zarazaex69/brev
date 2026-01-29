@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "bun --watch src/main.ts",
     "start": "bun src/main.ts",
+    "test": "bun test",
     "db:generate": "drizzle-kit generate:sqlite",
     "db:migrate": "bun src/database/migrate.ts"
   },
