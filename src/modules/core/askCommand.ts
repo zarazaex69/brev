@@ -120,26 +120,25 @@ export const askCommand: Command = {
         content: question,
       });
 
-      QwenService.generate(messages, ctx.chat?.id).then(async (answer) => {
-        try {
-          await HistoryService.addMessage(telegramId, {
-            role: "assistant",
-            content: answer,
-          });
+      try {
+        const answer = await QwenService.generate(messages, ctx.chat?.id);
+        
+        await HistoryService.addMessage(telegramId, {
+          role: "assistant",
+          content: answer,
+        });
 
-          const htmlAnswer = markdownToHtml(answer);
-          
-          await ctx.api.deleteMessage(ctx.chat?.id!, processingMessage.message_id);
-          
-          await ctx.reply(`[!] Ваш вопрос:\n${question}\n\n` + `[^] Ответ Brev:\n${htmlAnswer}`, { 
-            parse_mode: "HTML",
-            reply_to_message_id: ctx.message?.message_id 
-          });
-        } catch (replyError) {
-          console.error("Reply error:", replyError);
-          await ctx.reply("[*] Произошла ошибка при отправке ответа");
+        const htmlAnswer = markdownToHtml(answer);
+        
+        if (ctx.chat?.id && processingMessage.message_id) {
+          await ctx.api.deleteMessage(ctx.chat.id, processingMessage.message_id);
         }
-      }).catch(async (error) => {
+        
+        await ctx.reply(`[!] Ваш вопрос:\n${question}\n\n` + `[^] Ответ Brev:\n${htmlAnswer}`, { 
+          parse_mode: "HTML",
+          reply_to_message_id: ctx.message?.message_id 
+        });
+      } catch (error) {
         console.error("Qwen service error:", error);
         let errorMessage = "[*] Произошла ошибка при обработке вопроса";
 
@@ -160,16 +159,32 @@ export const askCommand: Command = {
               errorMessage =
                 "[*] проблемы с AI сервисом\n\n[>] Попробуйте через несколько минут";
               break;
+            case "GENERATION_IN_PROGRESS":
+              errorMessage = "[*] Уже выполняется генерация ответа. Пожалуйста, подождите";
+              break;
           }
         }
 
-        await ctx.api.editMessageText(
-          ctx.chat?.id!,
-          processingMessage.message_id,
-          errorMessage,
-          { parse_mode: "HTML" },
-        );
-      });
+        try {
+          if (ctx.chat?.id && processingMessage.message_id) {
+            await ctx.api.editMessageText(
+              ctx.chat.id,
+              processingMessage.message_id,
+              errorMessage,
+              { parse_mode: "HTML" },
+            );
+          } else {
+            await ctx.reply(errorMessage, { parse_mode: "HTML" });
+          }
+        } catch (editError) {
+          console.error("Error editing message:", editError);
+          try {
+            await ctx.reply(errorMessage, { parse_mode: "HTML" });
+          } catch (replyError) {
+            console.error("Failed to send error message:", replyError);
+          }
+        }
+      }
     } catch (error) {
       console.error("Ask command error:", error);
       await ctx.reply("[*] Произошла внутренняя ошибка системы");

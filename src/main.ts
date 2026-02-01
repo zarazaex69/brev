@@ -21,12 +21,17 @@ async function setupMiddleware() {
 }
 
 async function registerCommands() {
-  await bot.api.setMyCommands(
-    commands.map(cmd => ({
-      command: cmd.name,
-      description: cmd.description,
-    }))
-  )
+  try {
+    await bot.api.setMyCommands(
+      commands.map(cmd => ({
+        command: cmd.name,
+        description: cmd.description,
+      }))
+    )
+  } catch (error) {
+    console.error("Failed to register commands:", error)
+    throw error
+  }
 }
 
 async function initializeBot() {
@@ -50,9 +55,15 @@ async function initializeBot() {
 
 async function gracefulShutdown() {
   console.log("\n[!] Shutting down bot...")
-  const db = Database.getInstance()
-  await db.disconnect()
-  process.exit(0)
+  try {
+    const db = Database.getInstance()
+    await db.disconnect()
+    console.log("[!] Database disconnected successfully")
+  } catch (error) {
+    console.error("Error during shutdown:", error)
+  } finally {
+    process.exit(0)
+  }
 }
 
 process.on("SIGINT", gracefulShutdown)

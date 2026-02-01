@@ -120,6 +120,10 @@ export class QwenService {
   }
 
   static async generate(messages: ChatMessage[], chatId?: number): Promise<string> {
+    if (chatId && this.activeGenerations.has(chatId)) {
+      throw new Error("GENERATION_IN_PROGRESS");
+    }
+
     try {
       const client = await this.getOrCreateClient();
       const options = {
@@ -144,20 +148,12 @@ export class QwenService {
         result += chunk;
       }
 
-      if (chatId) {
-        this.activeGenerations.delete(chatId);
-      }
-
       if (!result || result.trim().length === 0) {
         throw new Error("EMPTY_RESPONSE");
       }
 
       return result;
     } catch (error) {
-      if (chatId) {
-        this.activeGenerations.delete(chatId);
-      }
-      
       if (error instanceof Error) {
         if (error.message === "AUTH_REQUIRED") {
           throw new Error("AUTH_REQUIRED");
@@ -165,9 +161,16 @@ export class QwenService {
         if (error.message === "EMPTY_RESPONSE") {
           throw new Error("EMPTY_RESPONSE");
         }
+        if (error.message === "GENERATION_IN_PROGRESS") {
+          throw error;
+        }
       }
       console.error("Qwen service generate error:", error);
       throw new Error("API_ERROR");
+    } finally {
+      if (chatId) {
+        this.activeGenerations.delete(chatId);
+      }
     }
   }
 

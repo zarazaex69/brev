@@ -5,7 +5,7 @@ const runMigrations = async () => {
   await Database.getInstance().connect();
   const db = Database.getInstance().getDb();
   console.log("Running database migrations...");
-  migrate(db, { migrationsFolder: "drizzle" });
+  await migrate(db, { migrationsFolder: "drizzle" });
   console.log("Migrations completed.");
   // Bun seems to hang otherwise, so we explicitly exit.
   process.exit(0);

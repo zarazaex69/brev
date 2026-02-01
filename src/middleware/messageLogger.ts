@@ -20,5 +20,10 @@ export async function messageLoggerMiddleware(ctx: BotContext, next: NextFunctio
     }
   }
   
-  await next();
+  try {
+    await next();
+  } catch (error) {
+    console.error("Error in next middleware:", error);
+    throw error;
+  }
 }

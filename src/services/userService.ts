@@ -59,7 +59,7 @@ export class UserService {
       }
     } catch (error) {
       console.error("Error in getOrCreateUser:", error)
-      return { id: userId, username, firstName, isNew: false }
+      throw error
     }
   }
 

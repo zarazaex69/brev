@@ -1,6 +1,6 @@
 import { Database } from "../database/connection.js"
 import { history } from "../database/schema.js"
-import { and, eq } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 
 export type HistoryMessage = {
   role: "user" | "assistant"
